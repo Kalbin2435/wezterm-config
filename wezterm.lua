@@ -28,16 +28,16 @@ ShuffleInPlace(images)
 local current_bg_index = 0
 config.keys = {
     {
-    key = 'c',
-    mods = 'ALT',
-    action = wezterm.action_callback(function(window, pane)
-      local overrides = window:get_config_overrides() or {}
-      overrides.window_background_image = nil
-      overrides.background = nil
-      window:set_config_overrides(overrides)
-      wezterm.log_info('Background cleared.')
-    end),
-  },
+        key = 'c',
+        mods = 'ALT',
+        action = wezterm.action_callback(function(window, pane)
+            local overrides = window:get_config_overrides() or {}
+            overrides.window_background_image = nil
+            overrides.background = nil
+            window:set_config_overrides(overrides)
+            wezterm.log_info('Background cleared.')
+        end),
+    },
     {
         key = 'n',
         mods = 'ALT',
@@ -47,6 +47,37 @@ config.keys = {
                 return
             end
             current_bg_index = current_bg_index + 1
+            if current_bg_index > #images then
+                current_bg_index = 1
+            end
+            local next_image = images[current_bg_index]
+            window:set_config_overrides({
+                window_background_image = nil, 
+                background = {
+                    {
+                        source = { File = next_image },
+                        hsb = { saturation = 0.8 }, 
+                    },
+                    {
+                        source = { Color = '#000000' },
+                        opacity = 0.85,
+                        width = '100%',
+                        height = '100%',
+                    },
+                }
+            })
+            wezterm.log_info('Switched background to: ' .. next_image)
+        end),
+    },
+    {
+        key = 'N',
+        mods = 'ALT',
+        action = wezterm.action_callback(function(window, pane)
+            if #images == 0 then
+                wezterm.log_error('No images found in ' .. bg_dir)
+                return
+            end
+            current_bg_index = current_bg_index - 1
             if current_bg_index > #images then
                 current_bg_index = 1
             end

@@ -31,16 +31,10 @@ config.keys = {
     key = 'c',
     mods = 'ALT',
     action = wezterm.action_callback(function(window, pane)
-      -- 1. Get the current overrides (so we don't lose other settings like font zoom)
       local overrides = window:get_config_overrides() or {}
-      
-      -- 2. Remove the background specific settings
       overrides.window_background_image = nil
       overrides.background = nil
-
-      -- 3. Apply the clean slate
       window:set_config_overrides(overrides)
-      
       wezterm.log_info('Background cleared.')
     end),
   },
@@ -66,20 +60,17 @@ config.keys = {
                     },
                     {
                         source = { Color = '#000000' },
-                        opacity = 0.85, -- 0.7 = 70% black overlay. Adjust this to make it darker/lighter.
+                        opacity = 0.85,
                         width = '100%',
                         height = '100%',
                     },
                 }
             })
-
-            -- Helpful logging (View with CTRL+SHIFT+L)
             wezterm.log_info('Switched background to: ' .. next_image)
         end),
     },
 }
 for i = 1, 8 do
-    -- CTRL+ALT + number to move to that position
     table.insert(config.keys, {
         key = tostring(i),
         mods = 'CTRL|ALT',
